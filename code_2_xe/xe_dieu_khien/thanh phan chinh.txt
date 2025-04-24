@@ -1,0 +1,9 @@
+Thành phần		Số lượng	Ghi chú
+Arduino Uno R3		1		Bộ điều khiển chính
+L298N			1		Điều khiển 4 motor DC
+Motor DC		4		Cho di chuyển robot
+Servo SG90		4		1 xoay, 2 nâng, 1 kẹp
+Module LM2596		1		Giảm áp từ pin (ví dụ 12V → 5V)
+PS2 Controller Module	1		Giao tiếp robot - tay cầm
+Pin 3S (3 cell Li-ion)	1		11.1V tổng
+Breadboard & Dây nối	Tuỳ ý		Đấu nguồn & chia tín hiệu

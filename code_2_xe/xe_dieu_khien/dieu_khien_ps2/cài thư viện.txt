@@ -1,0 +1,13 @@
+📥 Hướng dẫn cài thư viện PS2X_lib:
+Mở Arduino IDE
+
+Vào menu Sketch → Include Library → Manage Libraries...
+
+Gõ vào ô tìm kiếm: PS2X
+
+Tìm thư viện tên "PS2X_lib" của Bill Porter
+
+Nhấn Install
+
+💡 Hoặc: bạn có thể tải trực tiếp từ GitHub:
+🔗 https://github.com/madsci1016/Arduino-PS2X
