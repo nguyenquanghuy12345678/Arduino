@@ -1,0 +1,7 @@
+Tiền tố	Ý nghĩa / Hãng phổ biến	Ví dụ
+LM	Linear Monolithic – Texas Instruments	LM393, LM317
+TL	Texas Linear (Texas Instruments)	TL072 (op-amp)
+SN	Texas Instruments logic	SN74HC595
+NE	Philips / Signetics	NE555 (timer)
+IR	International Rectifier	IRF540N (MOSFET)
+L	STMicroelectronics (thường là IC điều khiển motor)	L293D, L298N

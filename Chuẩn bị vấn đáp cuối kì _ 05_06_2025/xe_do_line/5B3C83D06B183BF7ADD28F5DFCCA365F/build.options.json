@@ -1,0 +1,10 @@
+{
+  "additionalFiles": "",
+  "builtInLibrariesFolders": "C:\\Users\\This PC\\AppData\\Local\\Arduino15\\libraries",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "build.warn_data_percentage=75",
+  "fqbn": "arduino:avr:uno",
+  "hardwareFolders": "C:\\Users\\This PC\\AppData\\Local\\Arduino15\\packages",
+  "otherLibrariesFolders": "C:\\Users\\This PC\\Documents\\Arduino\\libraries",
+  "sketchLocation": "D:\\Documents\\Vidieukhien\\code_2_xe\\xe_do_line"
+}

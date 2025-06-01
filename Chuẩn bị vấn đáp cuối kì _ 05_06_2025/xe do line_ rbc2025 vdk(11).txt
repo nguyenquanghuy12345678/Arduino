@@ -1,0 +1,144 @@
+ // Khai báo chân cảm biến và ngưỡng
+const int sensorPins[5] = {A1, A2, A3, A4, A5};
+const int threshold = 500;
+int sensorState[5];
+
+// Chân động cơ L298N
+const int enA = 9, in1 = 8, in2 = 7;
+const int enB = 3, in3 = 5, in4 = 4;
+
+// Tốc độ động cơ
+const int SPEED_NORMAL = 200;
+const int SPEED_HIGH = 255;
+const int SPEED_TURN = 140;
+const int SPEED_FIND = 100;
+
+// Trạng thái robot
+enum RobotState { NORMAL, TURN_LEFT_90, TURN_RIGHT_90 };
+RobotState state = NORMAL;
+
+unsigned long turnStart = 0;
+const int turn90Time = 700;
+
+void setup() {
+  for (int i = 0; i < 5; i++) pinMode(sensorPins[i], INPUT);
+  pinMode(enA, OUTPUT); pinMode(in1, OUTPUT); pinMode(in2, OUTPUT);
+  pinMode(enB, OUTPUT); pinMode(in3, OUTPUT); pinMode(in4, OUTPUT);
+  Serial.begin(9600);
+  analogWrite(enA, SPEED_NORMAL);
+  analogWrite(enB, SPEED_NORMAL);
+  delay(1000);
+}
+
+void loop() {
+  readSensors();
+  printSensors();
+
+  switch (state) {
+    case TURN_LEFT_90:
+      if (millis() - turnStart >= turn90Time) {
+        state = NORMAL;
+        findLine();
+      } else turnLeft90();
+      return;
+
+    case TURN_RIGHT_90:
+      if (millis() - turnStart >= turn90Time) {
+        state = NORMAL;
+        findLine();
+      } else turnRight90();
+      return;
+
+    case NORMAL:
+      handleLineFollowing();
+      break;
+  }
+}
+
+void readSensors() {
+  for (int i = 0; i < 5; i++)
+    sensorState[i] = analogRead(sensorPins[i]) <= threshold ? 1 : 0;
+}
+
+void printSensors() {
+  Serial.print("Cảm biến: [");
+  for (int i = 0; i < 5; i++) {
+    Serial.print(sensorState[i]);
+    if (i < 4) Serial.print(", ");
+  }
+  Serial.println("]");
+}
+
+void handleLineFollowing() {
+  int s0 = sensorState[0], s1 = sensorState[1], s2 = sensorState[2];
+  int s3 = sensorState[3], s4 = sensorState[4];
+
+  if (s0 && s1 && s2 && s3 && s4) Stop();
+  else if (!s0 && !s1 && s2 && !s3 && !s4) forward();
+  else if (!s0 && !s1 && !s2 && !s3 && !s4) moveBack();
+  else if (s0 || (s0 && s1)) startTurnLeft90();
+  else if (s4 || (s3 && s4)) startTurnRight90();
+  else if (s1 && s2) turnLeft();
+  else if (s2 && s3) turnRight();
+  else forward(); // fallback
+}
+
+void forward() {
+  Serial.println("Đi thẳng");
+  move(HIGH, LOW, HIGH, LOW, SPEED_HIGH, SPEED_HIGH);
+}
+
+void moveBack() {
+  Serial.println("Lùi");
+  move(LOW, HIGH, LOW, HIGH, SPEED_NORMAL, SPEED_NORMAL);
+}
+
+void turnLeft() {
+  Serial.println("Rẽ trái nhẹ");
+  move(HIGH, LOW, HIGH, LOW, SPEED_TURN, SPEED_NORMAL);
+}
+
+void turnRight() {
+  Serial.println("Rẽ phải nhẹ");
+  move(HIGH, LOW, HIGH, LOW, SPEED_NORMAL, SPEED_TURN);
+}
+
+void turnLeft90() {
+  Serial.println("Rẽ trái 90°");
+  move(LOW, HIGH, HIGH, LOW, SPEED_TURN, SPEED_TURN);
+}
+
+void turnRight90() {
+  Serial.println("Rẽ phải 90°");
+  move(HIGH, LOW, LOW, HIGH, SPEED_TURN, SPEED_TURN);
+}
+
+void findLine() {
+  Serial.println("Tìm line...");
+  move(HIGH, LOW, HIGH, LOW, SPEED_FIND, SPEED_FIND);
+}
+
+void Stop() {
+  Serial.println("Dừng");
+  move(LOW, LOW, LOW, LOW, 0, 0);
+}
+
+void move(bool i1, bool i2, bool i3, bool i4, int spA, int spB) {
+  digitalWrite(in1, i1); digitalWrite(in2, i2);
+  digitalWrite(in3, i3); digitalWrite(in4, i4);
+  analogWrite(enA, spA); analogWrite(enB, spB);
+}
+
+void startTurnLeft90() {
+  Serial.println("Bắt đầu rẽ trái 90°");
+  state = TURN_LEFT_90;
+  turnStart = millis();
+  turnLeft90();
+}
+
+void startTurnRight90() {
+  Serial.println("Bắt đầu rẽ phải 90°");
+  state = TURN_RIGHT_90;
+  turnStart = millis();
+  turnRight90();
+}
